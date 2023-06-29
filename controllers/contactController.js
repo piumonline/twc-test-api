@@ -17,9 +17,14 @@ const createContact = async (req, res) => {
   const { name, gender, email, phone } = req.body; //destructuring the request 
   if (!name || !gender || !email || !phone) { //if any of the fields are empty then throw error
     res.status(400);
-    throw new Error("All fields are mandatory !");
+    res.status(400).json({msg: "All fields are mandatory !"});
   }
-  const contact = await contacts.create(req.body);
+  const contact = await contacts.create({
+    name,
+    email,
+    gender,
+    phone,
+  });
   res.status(201).json(contact);
 };
 
