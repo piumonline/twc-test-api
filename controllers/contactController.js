@@ -3,8 +3,9 @@ const contacts = require("../models/contactModel");
 // Get all contacts
 const getContacts = async (req, res) => {
     try {
-      const contact = await contacts.find();
+      const contact = await contacts.find({ user_id: req.body.userId });
       res.status(200).json(contact);
+      console.log("contact")
     } catch (err) {
       res.json(err);
   }
@@ -24,6 +25,7 @@ const createContact = async (req, res) => {
     email,
     gender,
     phone,
+    user_id: req.body.userId,
   });
   res.status(201).json(contact);
 };
@@ -31,7 +33,12 @@ const createContact = async (req, res) => {
 //Update contact
 const updateContact = async (req, res) => {
   try {
-    const updateContact = await contacts.findByIdAndUpdate(
+
+    if (contact.user_id.toString() !== req.user.id) { //if the user id is not equal to the user id in the request then throw error
+      res.status(403);
+      throw new Error("User don't have permission to update other user contacts");
+    }
+      const updateContact = await contacts.findByIdAndUpdate(
       req.params.id,
       {
         $set: req.body,
@@ -48,6 +55,10 @@ const updateContact = async (req, res) => {
 //Delete contact
 const deleteContact = async (req, res) => {
   try {
+    if (contact.user_id.toString() !== req.user.id) { //if the user id is not equal to the user id in the request then throw error
+      res.status(403);
+      throw new Error("User don't have permission to update other user contacts");
+    }
     //find the item by its id and delete it
     const deleteExpense = await contacts.findByIdAndDelete(
       req.params.id

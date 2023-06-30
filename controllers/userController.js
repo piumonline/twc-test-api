@@ -6,8 +6,8 @@ const jwt = require("jsonwebtoken"); //for token
 // Register new user
 const registerUser = async (req, res) => {
     try {
-        const {username, email, password} = req.body; //destructuring
-        if (!username || !email || !password) { //if any of the fields are empty
+        const { email, password} = req.body; //destructuring
+        if ( !email || !password) { //if any of the fields are empty
             return res.status(400).json({msg: "Not all fields have been entered."});
         }
         const userAvailable = await users.findOne({email: email}); //check if user already exists
@@ -16,11 +16,9 @@ const registerUser = async (req, res) => {
         }
         //hashing password
         const hashPassword = await bcrypt.hash(password, 10);
-        console.log(hashPassword);
 
         //if any of the fields are not empty and user already not exists create new user
         const newUser = await users.create({
-            username: username,
             email: email,
             password: hashPassword
         });
@@ -30,7 +28,6 @@ const registerUser = async (req, res) => {
         if(user){ //if user created successfully
             res.status(201).json({
                 _id: user._id,
-                username: user.username,
                 email: user.email,
             })
         } else{
@@ -60,8 +57,7 @@ const registerUser = async (req, res) => {
                 message: "Login Successfully",
                 token,
                 user,
-              });
-            
+              });            
         }else{
             res.status(401).json({msg: "Invalid credentials."});
         }
