@@ -2,7 +2,7 @@
 This repository was created as part of the TWC Innovations full stack software engineering internship talent acquisition assignment.
 
 # How to run 
-  step 1: npm i
+  step 1: npm i<br>
   step 2: npm start
 
 # api endpoints for testing purposes =  {
